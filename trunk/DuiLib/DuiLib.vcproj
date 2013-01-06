@@ -402,6 +402,10 @@
 			Filter="cpp;c;cxx;rc;def;r;odl;idl;hpj;bat"
 			>
 			<File
+				RelativePath=".\DuiLib.rc"
+				>
+			</File>
+			<File
 				RelativePath=".\StdAfx.cpp"
 				>
 				<FileConfiguration
@@ -665,6 +669,10 @@
 			Filter="h;hpp;hxx;hm;inl"
 			>
 			<File
+				RelativePath=".\resource.h"
+				>
+			</File>
+			<File
 				RelativePath=".\StdAfx.h"
 				>
 			</File>
@@ -837,6 +845,10 @@
 			Name="Resource Files"
 			Filter="ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe"
 			>
+			<File
+				RelativePath=".\res\Defaule.zip"
+				>
+			</File>
 		</Filter>
 	</Files>
 	<Globals>

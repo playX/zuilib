@@ -2,7 +2,7 @@
 #define WIN_IMPL_BASE_HPP
 
 #include "stdafx.h"
-
+#define IDR_ZIPRES                      101
 namespace DuiLib
 {
 
@@ -53,7 +53,7 @@ CDuiString WindowImplBase::GetZIPFileName() const
 
 LPCTSTR WindowImplBase::GetResourceID() const
 {
-	return _T("");
+	return MAKEINTRESOURCE(IDR_ZIPRES);
 }
 
 CControlUI* WindowImplBase::CreateControl(LPCTSTR pstrClass)
@@ -202,15 +202,61 @@ LRESULT WindowImplBase::OnSysCommand(UINT uMsg, WPARAM wParam, LPARAM lParam, BO
 	return lRes;
 }
 
+bool WindowImplBase::SetDefaultAttribute()
+{
+	HINSTANCE hInst = NULL;
+#ifdef _DEBUG
+#   ifdef _UNICODE
+		hInst = ::GetModuleHandle(_T("DuiLib_ud.dll"));
+#   else
+		hInst = ::GetModuleHandle(_T("DuiLib_d.dll"));
+#   endif
+#else
+#   ifdef _UNICODE
+		hInst = ::GetModuleHandle(_T("DuiLib_u.dll"));
+#   else
+		hInst = ::GetModuleHandle(_T("DuiLib.dll"));
+#   endif
+#endif
+	HRSRC hResource = ::FindResource(hInst, GetResourceID(), _T("ZIPRES"));
+	if( hResource == NULL )
+		return false;
+	DWORD dwSize = 0;
+	HGLOBAL hGlobal = ::LoadResource(hInst, hResource);
+	if( hGlobal == NULL ) 
+	{
+#if defined(WIN32) && !defined(UNDER_CE)
+		::FreeResource(hResource);
+#endif
+		return false;
+	}
+	dwSize = ::SizeofResource(hInst, hResource);
+	if( dwSize == 0 )
+		return false;
+	m_lpResourceZIPBuffer = new BYTE[ dwSize ];
+	if (m_lpResourceZIPBuffer != NULL)
+	{
+		::CopyMemory(m_lpResourceZIPBuffer, (LPBYTE)::LockResource(hGlobal), dwSize);
+	}
+#if defined(WIN32) && !defined(UNDER_CE)
+	::FreeResource(hResource);
+#endif
+	m_PaintManager.SetResourceZip(m_lpResourceZIPBuffer, dwSize);
+	CDialogBuilder builder;
+	builder.Create(_T("Default.xml"), (UINT)0, this, &m_PaintManager);
+	m_PaintManager.SetResourceZip(_T(""), 0);
+	return true;
+}
+
 LRESULT WindowImplBase::OnCreate(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled)
 {
-	/*LONG styleValue = ::GetWindowLong(*this, GWL_STYLE);
+	LONG styleValue = ::GetWindowLong(*this, GWL_STYLE);
 	styleValue &= ~WS_CAPTION;
 	::SetWindowLong(*this, GWL_STYLE, styleValue | WS_CLIPSIBLINGS | WS_CLIPCHILDREN);
 	RECT rcClient;
 	::GetClientRect(*this, &rcClient);
 	::SetWindowPos(*this, NULL, rcClient.left, rcClient.top, rcClient.right - rcClient.left, \
-		rcClient.bottom - rcClient.top, SWP_FRAMECHANGED);*/
+		rcClient.bottom - rcClient.top, SWP_FRAMECHANGED);
 
 	m_PaintManager.Init(m_hWnd);
 	m_PaintManager.AddPreMessageFilter(this);
@@ -219,11 +265,7 @@ LRESULT WindowImplBase::OnCreate(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& 
 	CDuiString strResourcePath=m_PaintManager.GetInstancePath();
 	strResourcePath+=GetSkinFolder().GetData();
 	m_PaintManager.SetResourcePath(strResourcePath.GetData());
-
-	{
-		CDialogBuilder builder;
-		builder.Create(_T("Default.xml"), (UINT)0, this, &m_PaintManager);
-	}
+	if (m_bUseDefault && !SetDefaultAttribute()) return 0;
 	
 	switch(GetResourceType())
 	{
