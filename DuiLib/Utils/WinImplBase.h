@@ -22,7 +22,7 @@ namespace DuiLib
 		, public IDialogBuilderCallback
 	{
 	public:
-		WindowImplBase(){};
+		WindowImplBase(){ m_bUseDefault = true; };
 		virtual ~WindowImplBase(){};
 		virtual void InitWindow(){};
 		virtual void OnFinalMessage( HWND hWnd );
@@ -36,9 +36,11 @@ namespace DuiLib
 		virtual CDuiString GetSkinFile() = 0;
 		virtual LPCTSTR GetWindowClassName(void) const = 0 ;
 		LRESULT ResponseDefaultKeyEvent(WPARAM wParam);
+		bool	SetDefaultAttribute();
 
 		CPaintManagerUI m_PaintManager;
 		static LPBYTE m_lpResourceZIPBuffer;
+		bool	m_bUseDefault;
 
 	public:
 		virtual UINT GetClassStyle() const;
