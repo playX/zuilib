@@ -161,7 +161,7 @@ public:
 	CDuiString GetVirtualWnd() const;
 
 	//	添加私有方法
-private:
+protected:
 	//	RGB装换DWORD
 	DWORD	RGBToColorREF(CDuiString		sRGB);
 public:
