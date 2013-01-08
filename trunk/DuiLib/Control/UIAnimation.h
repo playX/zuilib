@@ -5,6 +5,8 @@
 
 //class vector;
 #include <vector>
+#include <algorithm>
+#pragma warning (disable:4251)
 
 namespace DuiLib {
 
