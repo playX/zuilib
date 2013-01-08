@@ -2,6 +2,7 @@
 #define WIN_IMPL_BASE_HPP
 
 #include "stdafx.h"
+// #include ".\resource.h"
 #define IDR_ZIPRES                      101
 namespace DuiLib
 {
@@ -13,6 +14,11 @@ LPBYTE WindowImplBase::m_lpResourceZIPBuffer=NULL;
 DUI_BEGIN_MESSAGE_MAP(WindowImplBase,CNotifyPump)
 	DUI_ON_MSGTYPE(DUI_MSGTYPE_CLICK,OnClick)
 DUI_END_MESSAGE_MAP()
+
+WindowImplBase::WindowImplBase()
+{
+	m_bUseDefault = true;
+}
 
 void WindowImplBase::OnFinalMessage( HWND hWnd )
 {
@@ -114,6 +120,41 @@ LRESULT WindowImplBase::OnNcHitTest(UINT uMsg, WPARAM wParam, LPARAM lParam, BOO
 	RECT rcClient;
 	::GetClientRect(*this, &rcClient);
 
+	if( !::IsZoomed(*this) ) {
+		RECT rcSizeBox = m_PaintManager.GetSizeBox();
+		if( pt.y < rcClient.top + rcSizeBox.top ) {
+			if( pt.x < rcClient.left + rcSizeBox.left ) return HTTOPLEFT;
+			if( pt.x > rcClient.right - rcSizeBox.right ) return HTTOPRIGHT;
+			return HTTOP;
+		}
+		else if( pt.y > rcClient.bottom - rcSizeBox.bottom ) {
+			if( pt.x < rcClient.left + rcSizeBox.left ) return HTBOTTOMLEFT;
+			if( pt.x > rcClient.right - rcSizeBox.right ) return HTBOTTOMRIGHT;
+			return HTBOTTOM;
+		}
+		if( pt.x < rcClient.left + rcSizeBox.left ) return HTLEFT;
+		if( pt.x > rcClient.right - rcSizeBox.right ) return HTRIGHT;
+	}
+
+	RECT rcCaption = m_PaintManager.GetCaptionRect();
+	if( pt.x >= rcClient.left + rcCaption.left && pt.x < rcClient.right - rcCaption.right \
+		&& pt.y >= rcCaption.top && pt.y < rcCaption.bottom ) {
+			CControlUI* pControl = static_cast<CControlUI*>(m_PaintManager.FindControl(pt));
+			if( pControl && _tcscmp(pControl->GetClass(), _T("ButtonUI")) != 0 && 
+				_tcscmp(pControl->GetClass(), _T("OptionUI")) != 0 &&
+				_tcscmp(pControl->GetClass(), _T("TextUI")) != 0 )
+				return HTCAPTION;
+	}
+
+	return HTCLIENT;
+
+
+	/*POINT pt; pt.x = GET_X_LPARAM(lParam); pt.y = GET_Y_LPARAM(lParam);
+	::ScreenToClient(*this, &pt);
+
+	RECT rcClient;
+	::GetClientRect(*this, &rcClient);
+
 	RECT rcCaption = m_PaintManager.GetCaptionRect();
 	if( pt.x >= rcClient.left + rcCaption.left && pt.x < rcClient.right - rcCaption.right \
 		&& pt.y >= rcCaption.top && pt.y < rcCaption.bottom ) {
@@ -124,7 +165,7 @@ LRESULT WindowImplBase::OnNcHitTest(UINT uMsg, WPARAM wParam, LPARAM lParam, BOO
 				return HTCAPTION;
 	}
 
-	return HTCLIENT;
+	return HTCLIENT;*/
 }
 
 LRESULT WindowImplBase::OnGetMinMaxInfo(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled)

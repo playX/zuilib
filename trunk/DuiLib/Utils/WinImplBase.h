@@ -22,7 +22,7 @@ namespace DuiLib
 		, public IDialogBuilderCallback
 	{
 	public:
-		WindowImplBase(){ m_bUseDefault = true; };
+		WindowImplBase();
 		virtual ~WindowImplBase(){};
 		virtual void InitWindow(){};
 		virtual void OnFinalMessage( HWND hWnd );
