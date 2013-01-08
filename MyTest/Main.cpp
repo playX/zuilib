@@ -2,11 +2,11 @@
 //
 
 #include "stdafx.h"
-#include "resource.h"
+//#include "resource.h"
 class CFrameWindowWnd : public WindowImplBase
 {
 public:
-    CFrameWindowWnd() { SetIcon(IDI_ICON); };
+    CFrameWindowWnd() {  };
 	CDuiString GetSkinFolder() {return _T(""); };
 	CDuiString GetSkinFile() {return _T("t.xml"); };
     LPCTSTR GetWindowClassName() const { return _T("UIMainFrame"); };
@@ -15,10 +15,7 @@ public:
 
     void Notify(TNotifyUI& msg)
     {
-		if (_tcsicmp(msg.sType, _T("click")) == 0)
-		{
-			OnClick(msg);
-		}
+		if (_tcsicmp(msg.sType, _T("click")) == 0) OnClick(msg);
     }
 };
 
