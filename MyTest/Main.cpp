@@ -2,11 +2,11 @@
 //
 
 #include "stdafx.h"
-
+#include "resource.h"
 class CFrameWindowWnd : public WindowImplBase
 {
 public:
-    CFrameWindowWnd() { };
+    CFrameWindowWnd() { SetIcon(IDI_ICON); };
 	CDuiString GetSkinFolder() {return _T(""); };
 	CDuiString GetSkinFile() {return _T("t.xml"); };
     LPCTSTR GetWindowClassName() const { return _T("UIMainFrame"); };
