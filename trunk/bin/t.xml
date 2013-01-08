@@ -1,12 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Window mininfo="200,360" size="360,600" caption="0,0,0,30" sizebox="4,4,4,4">
+<Window mininfo="200,360" size="360,600" caption="0,0,0,30" sizebox="4,4,4,4" roundcorner="4,4,4,4">
 	<Font name="幼圆" size="12" default="true" />
 	<Font name="微软雅黑" size="18" />
-	
-	<VerticalLayout inset="10,6,10,6" bkcolor="RGB(123,255,0)" colorhsl="true" borderround="0,0" bkimage="file='winbk.bmp' xtiled='false' ytiled='false' dest='0,0,360,400'" hole="false">
-		<VerticalLayout width="360">
-		  <Button name="test" float="true" pos="100,0,95,19" width="39" height="19" tooltip="测试按钮" />
-          <Button name="closebtn" float="true" pos="300,0,95,19" width="39" height="19" tooltip="关闭" normalimage="file='btn_close_normal.png'" hotimage="btn_close_highlight.png" pushedimage="btn_close_down.png"  />
-        </VerticalLayout>
+	<VerticalLayout inset="10,6,10,6" bkimage="file='voice_rect.png' xtiled='true' ytiled='true' hole='false'">
+		<HorizontalLayout height="22" inset="2,2,0,0">
+			<VerticalLayout>
+				<Text text="Windows(test)" textcolor="RGB(255,255,222)" font="2" float="true" pos="0,0,100,22"/>
+			</VerticalLayout>
+			<VerticalLayout width="160">
+				<Button name="test" float="true" pos="0,0,95,19" width="39" height="19" tooltip="测试按钮" />
+				<Button name="closebtn" float="true" pos="120,0,95,19" width="39" height="19" tooltip="关闭" normalimage="file='btn_close_normal.png'" hotimage="btn_close_highlight.png" pushedimage="btn_close_down.png"  />
+			</VerticalLayout>
+        </HorizontalLayout>
 	</VerticalLayout>
 </Window>

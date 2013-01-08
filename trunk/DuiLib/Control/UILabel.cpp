@@ -178,6 +178,7 @@ namespace DuiLib
 
 	void CLabelUI::SetAttribute(LPCTSTR pstrName, LPCTSTR pstrValue)
 	{
+		CDuiString	strValue = pstrValue;
 		if( _tcscmp(pstrName, _T("align")) == 0 ) {
 			if( _tcsstr(pstrValue, _T("left")) != NULL ) {
 				m_uTextStyle &= ~(DT_CENTER | DT_RIGHT);
@@ -219,12 +220,14 @@ namespace DuiLib
 			if( *pstrValue == _T('#')) pstrValue = ::CharNext(pstrValue);
 			LPTSTR pstr = NULL;
 			DWORD clrColor = _tcstoul(pstrValue, &pstr, 16);
+			if (strValue.Find(_T("RGB")) != -1) clrColor = RGBToColorREF(strValue);
 			SetTextColor(clrColor);
 		}
 		else if( _tcscmp(pstrName, _T("disabledtextcolor")) == 0 ) {
 			if( *pstrValue == _T('#')) pstrValue = ::CharNext(pstrValue);
 			LPTSTR pstr = NULL;
 			DWORD clrColor = _tcstoul(pstrValue, &pstr, 16);
+			if (strValue.Find(_T("RGB")) != -1) clrColor = RGBToColorREF(strValue);
 			SetDisabledTextColor(clrColor);
 		}
 		else if( _tcscmp(pstrName, _T("textpadding")) == 0 ) {
@@ -259,24 +262,28 @@ namespace DuiLib
 			if( *pstrValue == _T('#')) pstrValue = ::CharNext(pstrValue);
 			LPTSTR pstr = NULL;
 			DWORD clrColor = _tcstoul(pstrValue, &pstr, 16);
+			if (strValue.Find(_T("RGB")) != -1) clrColor = RGBToColorREF(strValue);
 			SetTextColor1(clrColor);
 		}
 		else if( _tcscmp(pstrName, _T("textshadowcolora")) == 0 ) {
 			if( *pstrValue == _T('#')) pstrValue = ::CharNext(pstrValue);
 			LPTSTR pstr = NULL;
 			DWORD clrColor = _tcstoul(pstrValue, &pstr, 16);
+			if (strValue.Find(_T("RGB")) != -1) clrColor = RGBToColorREF(strValue);
 			SetTextShadowColorA(clrColor);
 		}
 		else if( _tcscmp(pstrName, _T("textshadowcolorb")) == 0 ) {
 			if( *pstrValue == _T('#')) pstrValue = ::CharNext(pstrValue);
 			LPTSTR pstr = NULL;
 			DWORD clrColor = _tcstoul(pstrValue, &pstr, 16);
+			if (strValue.Find(_T("RGB")) != -1) clrColor = RGBToColorREF(strValue);
 			SetTextShadowColorB(clrColor);
 		}
 		else if( _tcscmp(pstrName, _T("strokecolor")) == 0 ) {
 			if( *pstrValue == _T('#')) pstrValue = ::CharNext(pstrValue);
 			LPTSTR pstr = NULL;
 			DWORD clrColor = _tcstoul(pstrValue, &pstr, 16);
+			if (strValue.Find(_T("RGB")) != -1) clrColor = RGBToColorREF(strValue);
 			SetStrokeColor(clrColor);
 		}
 		else CControlUI::SetAttribute(pstrName, pstrValue);
