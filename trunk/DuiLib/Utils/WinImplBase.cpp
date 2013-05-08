@@ -18,6 +18,7 @@ DUI_END_MESSAGE_MAP()
 WindowImplBase::WindowImplBase()
 {
 	m_bUseDefault = true;
+	m_bLayout = false;
 }
 
 void WindowImplBase::OnFinalMessage( HWND hWnd )
@@ -120,20 +121,25 @@ LRESULT WindowImplBase::OnNcHitTest(UINT uMsg, WPARAM wParam, LPARAM lParam, BOO
 	RECT rcClient;
 	::GetClientRect(*this, &rcClient);
 
-	if( !::IsZoomed(*this) ) {
-		RECT rcSizeBox = m_PaintManager.GetSizeBox();
-		if( pt.y < rcClient.top + rcSizeBox.top ) {
-			if( pt.x < rcClient.left + rcSizeBox.left ) return HTTOPLEFT;
-			if( pt.x > rcClient.right - rcSizeBox.right ) return HTTOPRIGHT;
-			return HTTOP;
+	if (m_bLayout)
+	{
+		if( !::IsZoomed(*this) ) {
+			RECT rcSizeBox = m_PaintManager.GetSizeBox();
+			if( pt.y < rcClient.top + rcSizeBox.top ) {
+				if( pt.x < rcClient.left + rcSizeBox.left ) return HTTOPLEFT;
+				if( pt.x > rcClient.right - rcSizeBox.right ) return HTTOPRIGHT;
+				return HTTOP;
+			}
+			else if( pt.y > rcClient.bottom - rcSizeBox.bottom ) {
+				if( pt.x < rcClient.left + rcSizeBox.left ) return HTBOTTOMLEFT;
+				if( pt.x > rcClient.right - rcSizeBox.right ) return HTBOTTOMRIGHT;
+				return HTBOTTOM;
+			}
+			if( pt.x < rcClient.left + rcSizeBox.left ) return HTLEFT;
+			if( pt.x > rcClient.right - rcSizeBox.right ) return HTRIGHT;
 		}
-		else if( pt.y > rcClient.bottom - rcSizeBox.bottom ) {
-			if( pt.x < rcClient.left + rcSizeBox.left ) return HTBOTTOMLEFT;
-			if( pt.x > rcClient.right - rcSizeBox.right ) return HTBOTTOMRIGHT;
-			return HTBOTTOM;
-		}
-		if( pt.x < rcClient.left + rcSizeBox.left ) return HTLEFT;
-		if( pt.x > rcClient.right - rcSizeBox.right ) return HTRIGHT;
+
+		
 	}
 
 	RECT rcCaption = m_PaintManager.GetCaptionRect();
@@ -243,9 +249,22 @@ LRESULT WindowImplBase::OnSysCommand(UINT uMsg, WPARAM wParam, LPARAM lParam, BO
 	return lRes;
 }
 
-bool WindowImplBase::SetDefaultAttribute()
+void WindowImplBase::SetTimer(__in UINT_PTR nIDEvent,__in UINT uElapse)
 {
-	HINSTANCE hInst = NULL;
+	::SetTimer(m_hWnd, nIDEvent, uElapse, NULL);
+}
+
+void WindowImplBase::KillTimer(__in UINT_PTR uIDEvent)
+{
+	::KillTimer(m_hWnd, uIDEvent);
+}
+
+bool WindowImplBase::SetDefaultAttribute(bool	bUseDefault)
+{
+	m_bUseDefault = bUseDefault;
+	if (m_bUseDefault)
+	{
+		HINSTANCE hInst = NULL;
 #ifdef _DEBUG
 #   ifdef _UNICODE
 		hInst = ::GetModuleHandle(_T("DuiLib_ud.dll"));
@@ -259,33 +278,35 @@ bool WindowImplBase::SetDefaultAttribute()
 		hInst = ::GetModuleHandle(_T("DuiLib.dll"));
 #   endif
 #endif
-	HRSRC hResource = ::FindResource(hInst, GetResourceID(), _T("ZIPRES"));
-	if( hResource == NULL )
-		return false;
-	DWORD dwSize = 0;
-	HGLOBAL hGlobal = ::LoadResource(hInst, hResource);
-	if( hGlobal == NULL ) 
-	{
+		HRSRC hResource = ::FindResource(hInst, GetResourceID(), _T("ZIPRES"));
+		if( hResource == NULL )
+			return false;
+		DWORD dwSize = 0;
+		HGLOBAL hGlobal = ::LoadResource(hInst, hResource);
+		if( hGlobal == NULL ) 
+		{
+#if defined(WIN32) && !defined(UNDER_CE)
+			::FreeResource(hResource);
+#endif
+			return false;
+		}
+		dwSize = ::SizeofResource(hInst, hResource);
+		if( dwSize == 0 )
+			return false;
+		m_lpResourceZIPBuffer = new BYTE[ dwSize ];
+		if (m_lpResourceZIPBuffer != NULL)
+		{
+			::CopyMemory(m_lpResourceZIPBuffer, (LPBYTE)::LockResource(hGlobal), dwSize);
+		}
 #if defined(WIN32) && !defined(UNDER_CE)
 		::FreeResource(hResource);
 #endif
-		return false;
+		m_PaintManager.SetResourceZip(m_lpResourceZIPBuffer, dwSize);
+		CDialogBuilder builder;
+		builder.Create(_T("Default.xml"), (UINT)0, this, &m_PaintManager);
+		m_PaintManager.SetResourceZip(_T(""), 0);
 	}
-	dwSize = ::SizeofResource(hInst, hResource);
-	if( dwSize == 0 )
-		return false;
-	m_lpResourceZIPBuffer = new BYTE[ dwSize ];
-	if (m_lpResourceZIPBuffer != NULL)
-	{
-		::CopyMemory(m_lpResourceZIPBuffer, (LPBYTE)::LockResource(hGlobal), dwSize);
-	}
-#if defined(WIN32) && !defined(UNDER_CE)
-	::FreeResource(hResource);
-#endif
-	m_PaintManager.SetResourceZip(m_lpResourceZIPBuffer, dwSize);
-	CDialogBuilder builder;
-	builder.Create(_T("Default.xml"), (UINT)0, this, &m_PaintManager);
-	m_PaintManager.SetResourceZip(_T(""), 0);
+
 	return true;
 }
 
@@ -306,7 +327,7 @@ LRESULT WindowImplBase::OnCreate(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& 
 	CDuiString strResourcePath=m_PaintManager.GetInstancePath();
 	strResourcePath+=GetSkinFolder().GetData();
 	m_PaintManager.SetResourcePath(strResourcePath.GetData());
-	if (m_bUseDefault && !SetDefaultAttribute()) return 0;
+	if (!SetDefaultAttribute()) return 0;
 	
 	switch(GetResourceType())
 	{
@@ -402,6 +423,12 @@ LRESULT WindowImplBase::OnMouseMove(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*l
 	return 0;
 }
 
+LRESULT WindowImplBase::OnTimer(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& bHandled)
+{
+	bHandled = FALSE;
+	return 0;
+}
+
 LRESULT WindowImplBase::HandleMessage(UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
 	LRESULT lRes = 0;
@@ -420,7 +447,7 @@ LRESULT WindowImplBase::HandleMessage(UINT uMsg, WPARAM wParam, LPARAM lParam)
 	case WM_MOUSEWHEEL:		lRes = OnMouseWheel(uMsg, wParam, lParam, bHandled); break;
 #endif
 	case WM_SIZE:			lRes = OnSize(uMsg, wParam, lParam, bHandled); break;
-	case WM_CHAR:		lRes = OnChar(uMsg, wParam, lParam, bHandled); break;
+	case WM_CHAR:			lRes = OnChar(uMsg, wParam, lParam, bHandled); break;
 	case WM_SYSCOMMAND:		lRes = OnSysCommand(uMsg, wParam, lParam, bHandled); break;
 	case WM_KEYDOWN:		lRes = OnKeyDown(uMsg, wParam, lParam, bHandled); break;
 	case WM_KILLFOCUS:		lRes = OnKillFocus(uMsg, wParam, lParam, bHandled); break;
@@ -428,7 +455,8 @@ LRESULT WindowImplBase::HandleMessage(UINT uMsg, WPARAM wParam, LPARAM lParam)
 	case WM_LBUTTONUP:		lRes = OnLButtonUp(uMsg, wParam, lParam, bHandled); break;
 	case WM_LBUTTONDOWN:	lRes = OnLButtonDown(uMsg, wParam, lParam, bHandled); break;
 	case WM_MOUSEMOVE:		lRes = OnMouseMove(uMsg, wParam, lParam, bHandled); break;
-	case WM_MOUSEHOVER:	lRes = OnMouseHover(uMsg, wParam, lParam, bHandled); break;
+	case WM_MOUSEHOVER:		lRes = OnMouseHover(uMsg, wParam, lParam, bHandled); break;
+	case WM_TIMER:			lRes = OnTimer(uMsg, wParam, lParam, bHandled); break;
 	default:				bHandled = FALSE; break;
 	}
 	if (bHandled) return lRes;
