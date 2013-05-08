@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Window mininfo="200,360" size="360,600" caption="0,0,0,30" sizebox="4,4,4,4" roundcorner="4,4,4,4">
+<Window mininfo="200,360" size="840,257" caption="0,0,0,30" sizebox="4,4,4,4" roundcorner="4,4,4,4">
 	<Font name="幼圆" size="12" default="true" />
 	<Font name="微软雅黑" size="18" />
-	<VerticalLayout inset="10,6,10,6" bkimage="file='voice_rect.png' xtiled='true' ytiled='true' hole='false'">
+	<VerticalLayout inset="10,6,10,6" bkimage="file='main.png' xtiled='false' ytiled='false' hole='false'">
 		<HorizontalLayout height="22" inset="2,2,0,0">
 			<VerticalLayout>
 				<Text text="Windows(test)" textcolor="RGB(255,255,222)" font="2" float="true" pos="0,0,100,22"/>
@@ -12,5 +12,9 @@
 				<Button name="closebtn" float="true" pos="120,0,95,19" width="39" height="19" tooltip="关闭" normalimage="file='btn_close_normal.png'" hotimage="btn_close_highlight.png" pushedimage="btn_close_down.png"  />
 			</VerticalLayout>
         </HorizontalLayout>
+		<HorizontalLayout height="250">
+			<Control name = "ctrl" float = "true" bkimage = "SignalRect00.png" pos = "255,50,320,90" />
+			<Text text="Windows(test2)" textcolor="RGB(0,0,222)" font="2" float="true" pos="250,100,500,122"/>
+		</HorizontalLayout>
 	</VerticalLayout>
 </Window>
