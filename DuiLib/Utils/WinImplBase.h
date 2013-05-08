@@ -36,11 +36,18 @@ namespace DuiLib
 		virtual CDuiString GetSkinFile() = 0;
 		virtual LPCTSTR GetWindowClassName(void) const = 0 ;
 		LRESULT ResponseDefaultKeyEvent(WPARAM wParam);
-		bool	SetDefaultAttribute();
+		bool	SetDefaultAttribute(bool	bUseDefault = true);
 
 		CPaintManagerUI m_PaintManager;
 		static LPBYTE m_lpResourceZIPBuffer;
 		bool	m_bUseDefault;
+		bool	m_bLayout;
+
+	public:
+		//设置窗口是否可拖拽（是否重写OnNcHitTest）
+		void	SetLayout(bool	bLayout = true) { m_bLayout = bLayout; };
+		void	SetTimer(__in UINT_PTR nIDEvent,__in UINT uElapse);
+		void	KillTimer(__in UINT_PTR uIDEvent);
 
 	public:
 		virtual UINT GetClassStyle() const;
@@ -71,6 +78,7 @@ namespace DuiLib
 		virtual LRESULT OnLButtonDown(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& bHandled);
 		virtual LRESULT OnLButtonUp(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& bHandled);
 		virtual LRESULT OnMouseMove(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& bHandled);
+		virtual LRESULT OnTimer(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& bHandled);
 		virtual LRESULT HandleMessage(UINT uMsg, WPARAM wParam, LPARAM lParam);
 		virtual LRESULT HandleCustomMessage(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled);
 		virtual LONG GetStyle();
