@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Window mininfo="200,360" size="840,257" caption="0,0,0,30" sizebox="4,4,4,4" roundcorner="4,4,4,4">
+	<Font name="幼圆" size="12" default="true" />
+	<Font name="微软雅黑" size="18" />
+	<VerticalLayout inset="10,6,10,6" bkimage="file='main.bmp' xtiled='false' ytiled='false' hole='false'">
+		<Button name="test2" float="true" pos="400,50,95,19" width="201" height="78" tooltip="关闭" normalimage="file='Disconnect.png'" hotimage="Disconnect_2.png" pushedimage="Disconnect.png"  />
+	</VerticalLayout>
+</Window>
