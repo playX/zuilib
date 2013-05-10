@@ -5,7 +5,7 @@
 	<VerticalLayout inset="10,6,10,6" bkimage="file='main.png' xtiled='false' ytiled='false' hole='false'">
 		<HorizontalLayout height="22" inset="2,2,0,0">
 			<VerticalLayout>
-				<Text text="Windows(test)" textcolor="RGB(255,255,222)" font="2" float="true" pos="0,0,100,22"/>
+				<Text text="Windows(test)" textcolor="0xFF002579" font="2" float="true" pos="0,0,100,22"/>
 			</VerticalLayout>
 			<VerticalLayout width="160">
 				<Button name="test" float="true" pos="0,0,95,19" width="39" height="19" tooltip="测试按钮" />
@@ -14,7 +14,8 @@
         </HorizontalLayout>
 		<HorizontalLayout height="250">
 			<Control name = "ctrl" float = "true" bkimage = "SignalRect00.png" pos = "255,50,320,90" />
-			<Text text="Windows(test2)" textcolor="RGB(0,0,222)" font="2" float="true" pos="250,100,500,122"/>
+			<Text text="Windows(test2)" textcolor="0x000000FF" font="2" float="true" pos="250,100,500,122"/>
+			<Button name="test2" float="true" pos="400,30,95,19" width="201" height="78" tooltip="关闭" normalimage="file='Disconnect.png'" hotimage="Disconnect.png" pushedimage="Disconnect.png"  />
 		</HorizontalLayout>
 	</VerticalLayout>
 </Window>

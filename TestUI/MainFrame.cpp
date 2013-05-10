@@ -19,6 +19,21 @@ void CMainFrame::Notify(DuiLib::TNotifyUI& msg)
 
 void	CMainFrame::InitWindow()
 {
+	DWORD	d = 0xaabbccdd;
+	BYTE	r = GetRValue(d);
+	BYTE	g = GetGValue(d);
+	BYTE	b = GetBValue(d);
+	CString strResourcePath=m_PaintManager.GetInstancePath();
+	strResourcePath+=GetSkinFolder().GetData();
+	CString	sPic;
+	sPic.Format(_T("%smain.bmp"), strResourcePath);
+	DuiLib::STRINGorID tmp(sPic.GetBuffer());
+	HRGN hRgn = DuiLib::CRenderEngine::CreateImageRegion((DuiLib::CRenderEngine::LoadImage(tmp)), RGB(0,255,0));
+	int re = SetWindowRgn(m_hWnd, hRgn, TRUE);
+
+	CRgn	rgn;
+	rgn.CreateRectRgn(100,100,200,200);
+	re = ::SetWindowRgn(m_hWnd, rgn, TRUE);
 	SetTimer(2, 1000);
 }
 
