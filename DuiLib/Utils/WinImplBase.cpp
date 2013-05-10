@@ -19,6 +19,7 @@ WindowImplBase::WindowImplBase()
 {
 	m_bUseDefault = true;
 	m_bLayout = false;
+	m_hRgn = NULL;
 }
 
 void WindowImplBase::OnFinalMessage( HWND hWnd )
@@ -214,9 +215,10 @@ LRESULT WindowImplBase::OnSize(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bH
 		::GetWindowRect(*this, &rcWnd);
 		rcWnd.Offset(-rcWnd.left, -rcWnd.top);
 		rcWnd.right++; rcWnd.bottom++;
-		HRGN hRgn = ::CreateRoundRectRgn(rcWnd.left, rcWnd.top, rcWnd.right, rcWnd.bottom, szRoundCorner.cx, szRoundCorner.cy);
-		::SetWindowRgn(*this, hRgn, TRUE);
-		::DeleteObject(hRgn);
+		if (m_hRgn == NULL)
+			m_hRgn = ::CreateRoundRectRgn(rcWnd.left, rcWnd.top, rcWnd.right, rcWnd.bottom, szRoundCorner.cx, szRoundCorner.cy);
+		::SetWindowRgn(*this, m_hRgn, TRUE);
+		::DeleteObject(m_hRgn);
 	}
 #endif
 	bHandled = FALSE;

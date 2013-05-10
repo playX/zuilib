@@ -42,12 +42,14 @@ namespace DuiLib
 		static LPBYTE m_lpResourceZIPBuffer;
 		bool	m_bUseDefault;
 		bool	m_bLayout;
+		HRGN	m_hRgn;
 
 	public:
 		//设置窗口是否可拖拽（是否重写OnNcHitTest）
 		void	SetLayout(bool	bLayout = true) { m_bLayout = bLayout; };
 		void	SetTimer(__in UINT_PTR nIDEvent,__in UINT uElapse);
 		void	KillTimer(__in UINT_PTR uIDEvent);
+		void	SetRgn(HRGN hRgn) { m_hRgn = hRgn; };
 
 	public:
 		virtual UINT GetClassStyle() const;
