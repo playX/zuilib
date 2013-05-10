@@ -841,14 +841,15 @@ void CControlUI::SetAttribute(LPCTSTR pstrName, LPCTSTR pstrValue)
 }
 DWORD	CControlUI::RGBToColorREF(CDuiString sRGB)
 {
-	DWORD	ctrColor = 0xff000000;
+	DWORD	ctrColor = 0xFF000000;
 	sRGB = sRGB.Mid(sRGB.Find(_T("(")) + 1);
 	CDuiString	strR = sRGB.Left(sRGB.Find(_T(",")));
 	sRGB = sRGB.Mid(sRGB.Find(_T(",")) + 1);
 	CDuiString	strG = sRGB.Left(sRGB.Find(_T(",")));
 	sRGB = sRGB.Mid(sRGB.Find(_T(",")) + 1);
 	CDuiString	strB = sRGB.Left(sRGB.Find(_T(")")));
-	ctrColor += RGB(_wtoi(strR), _wtoi(strG), _wtoi(strB));
+	//直接用16进制数表示与RGB逻辑上有冲突，需要将R-B调换？？？20130510
+	ctrColor += RGB(_wtoi(strB), _wtoi(strG), _wtoi(strR));
 	return ctrColor;
 }
 CControlUI* CControlUI::ApplyAttributeList(LPCTSTR pstrList)

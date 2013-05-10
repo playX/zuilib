@@ -129,22 +129,19 @@ typedef struct tagTRelativePosUI
 }TRelativePosUI;
 
 // Listener interface
-class INotifyUI
+interface INotifyUI
 {
-public:
     virtual void Notify(TNotifyUI& msg) = 0;
 };
 
 // MessageFilter interface
-class IMessageFilterUI
+interface IMessageFilterUI
 {
-public:
     virtual LRESULT MessageHandler(UINT uMsg, WPARAM wParam, LPARAM lParam, bool& bHandled) = 0;
 };
 
-class ITranslateAccelerator
+interface ITranslateAccelerator
 {
-public:
 	virtual LRESULT TranslateAccelerator(MSG *pMsg) = 0;
 };
 
