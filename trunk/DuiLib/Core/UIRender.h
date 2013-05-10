@@ -48,6 +48,8 @@ namespace DuiLib {
 		static void DrawHtmlText(HDC hDC, CPaintManagerUI* pManager, RECT& rc, LPCTSTR pstrText, 
 			DWORD dwTextColor, RECT* pLinks, CDuiString* sLinks, int& nLinkRects, UINT uStyle);
 		static HBITMAP GenerateBitmap(CPaintManagerUI* pManager, CControlUI* pControl, RECT rc);
+		//´´½¨ÇøÓò
+		static HRGN CreateImageRegion(TImageInfo* pImageInfo, COLORREF cTranColor);
 	};
 
 } // namespace DuiLib
